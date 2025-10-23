@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Textarea } from '@/components/ui/textarea';
 import Icon from '@/components/ui/icon';
 
@@ -20,6 +21,7 @@ const Index = () => {
   const [calcPrice, setCalcPrice] = useState<number | null>(null);
   
   const [formOpen, setFormOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -142,12 +144,117 @@ const Index = () => {
             <a href="#calculator" className="text-sm font-medium hover:text-primary transition-colors">Калькулятор</a>
             <a href="#contacts" className="text-sm font-medium hover:text-primary transition-colors">Контакты</a>
           </nav>
-          <Button className="hidden md:inline-flex" onClick={() => setFormOpen(true)}>
-            <Icon name="Phone" size={16} className="mr-2" />
-            Позвонить
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button className="hidden md:inline-flex" onClick={() => setFormOpen(true)}>
+              <Icon name="Phone" size={16} className="mr-2" />
+              Позвонить
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden"
+              onClick={() => setMobileMenuOpen(true)}
+            >
+              <Icon name="Menu" size={24} />
+            </Button>
+          </div>
         </div>
       </header>
+
+      <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+        <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+          <SheetHeader>
+            <SheetTitle className="flex items-center gap-2">
+              <Icon name="TreePine" size={24} className="text-primary" />
+              ЛесСтрой
+            </SheetTitle>
+            <SheetDescription>
+              Строительство деревянных домов
+            </SheetDescription>
+          </SheetHeader>
+          <nav className="flex flex-col gap-4 mt-8">
+            <a
+              href="#catalog"
+              className="flex items-center gap-3 text-lg font-medium hover:text-primary transition-colors py-2"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <Icon name="Layers" size={20} />
+              Каталог
+            </a>
+            <a
+              href="#projects"
+              className="flex items-center gap-3 text-lg font-medium hover:text-primary transition-colors py-2"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <Icon name="Home" size={20} />
+              Проекты
+            </a>
+            <a
+              href="#about"
+              className="flex items-center gap-3 text-lg font-medium hover:text-primary transition-colors py-2"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <Icon name="Info" size={20} />
+              О компании
+            </a>
+            <a
+              href="#services"
+              className="flex items-center gap-3 text-lg font-medium hover:text-primary transition-colors py-2"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <Icon name="Wrench" size={20} />
+              Услуги
+            </a>
+            <a
+              href="#reviews"
+              className="flex items-center gap-3 text-lg font-medium hover:text-primary transition-colors py-2"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <Icon name="Star" size={20} />
+              Отзывы
+            </a>
+            <a
+              href="#calculator"
+              className="flex items-center gap-3 text-lg font-medium hover:text-primary transition-colors py-2"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <Icon name="Calculator" size={20} />
+              Калькулятор
+            </a>
+            <a
+              href="#contacts"
+              className="flex items-center gap-3 text-lg font-medium hover:text-primary transition-colors py-2"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <Icon name="MapPin" size={20} />
+              Контакты
+            </a>
+          </nav>
+          <div className="mt-8 pt-8 border-t">
+            <Button
+              className="w-full"
+              size="lg"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                setFormOpen(true);
+              }}
+            >
+              <Icon name="Send" size={20} className="mr-2" />
+              Оставить заявку
+            </Button>
+            <div className="mt-6 space-y-3 text-sm text-muted-foreground">
+              <a href="tel:+79991234567" className="flex items-center gap-2 hover:text-primary transition-colors">
+                <Icon name="Phone" size={16} />
+                +7 (999) 123-45-67
+              </a>
+              <a href="mailto:info@lesstroy.ru" className="flex items-center gap-2 hover:text-primary transition-colors">
+                <Icon name="Mail" size={16} />
+                info@lesstroy.ru
+              </a>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
 
       <section className="relative py-20 md:py-32 overflow-hidden">
         <div className="absolute inset-0 bg-[url('https://cdn.poehali.dev/projects/1facf563-acf7-4911-a4fc-00f5625ed9db/files/1b45720f-c5e9-4631-a949-e4c4d798b972.jpg')] bg-cover bg-center opacity-10"></div>
