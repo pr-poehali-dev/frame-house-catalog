@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -7,13 +8,25 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
 import Icon from '@/components/ui/icon';
 
 const Index = () => {
+  const { toast } = useToast();
   const [calcType, setCalcType] = useState('frame-house');
   const [calcArea, setCalcArea] = useState('');
   const [calcFloors, setCalcFloors] = useState('1');
   const [calcPrice, setCalcPrice] = useState<number | null>(null);
+  
+  const [formOpen, setFormOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    projectType: 'frame-house',
+    message: ''
+  });
 
   const categories = [
     {
@@ -85,6 +98,33 @@ const Index = () => {
     setCalcPrice(Math.round(price));
   };
 
+  const handleSubmitForm = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.name || !formData.phone) {
+      toast({
+        title: 'Ошибка',
+        description: 'Заполните обязательные поля: имя и телефон',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    toast({
+      title: 'Заявка отправлена! ✅',
+      description: 'Мы свяжемся с вами в ближайшее время',
+    });
+
+    setFormData({
+      name: '',
+      phone: '',
+      email: '',
+      projectType: 'frame-house',
+      message: ''
+    });
+    setFormOpen(false);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -102,7 +142,7 @@ const Index = () => {
             <a href="#calculator" className="text-sm font-medium hover:text-primary transition-colors">Калькулятор</a>
             <a href="#contacts" className="text-sm font-medium hover:text-primary transition-colors">Контакты</a>
           </nav>
-          <Button className="hidden md:inline-flex">
+          <Button className="hidden md:inline-flex" onClick={() => setFormOpen(true)}>
             <Icon name="Phone" size={16} className="mr-2" />
             Позвонить
           </Button>
@@ -121,13 +161,15 @@ const Index = () => {
               Каркасные дома, бани, беседки и террасы. Экологично, надёжно, с гарантией.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="text-lg">
-                <Icon name="Layers" size={20} className="mr-2" />
-                Смотреть проекты
+              <Button size="lg" className="text-lg" onClick={() => setFormOpen(true)}>
+                <Icon name="Send" size={20} className="mr-2" />
+                Оставить заявку
               </Button>
-              <Button size="lg" variant="outline" className="text-lg">
-                <Icon name="Calculator" size={20} className="mr-2" />
-                Рассчитать стоимость
+              <Button size="lg" variant="outline" className="text-lg" asChild>
+                <a href="#calculator">
+                  <Icon name="Calculator" size={20} className="mr-2" />
+                  Рассчитать стоимость
+                </a>
               </Button>
             </div>
           </div>
@@ -214,7 +256,7 @@ const Index = () => {
                     <CardContent>
                       <div className="flex justify-between items-center">
                         <span className="text-2xl font-bold text-primary">{project.price} ₽</span>
-                        <Button size="sm">Заказать</Button>
+                        <Button size="sm" onClick={() => setFormOpen(true)}>Заказать</Button>
                       </div>
                     </CardContent>
                   </Card>
@@ -248,7 +290,7 @@ const Index = () => {
                         <CardContent>
                           <div className="flex justify-between items-center">
                             <span className="text-2xl font-bold text-primary">{project.price} ₽</span>
-                            <Button size="sm">Заказать</Button>
+                            <Button size="sm" onClick={() => setFormOpen(true)}>Заказать</Button>
                           </div>
                         </CardContent>
                       </Card>
@@ -581,6 +623,89 @@ const Index = () => {
           </div>
         </div>
       </footer>
+
+      <Dialog open={formOpen} onOpenChange={setFormOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Оставить заявку</DialogTitle>
+            <DialogDescription>
+              Заполните форму и мы свяжемся с вами в ближайшее время
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleSubmitForm} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="form-name">Имя *</Label>
+              <Input
+                id="form-name"
+                placeholder="Ваше имя"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="form-phone">Телефон *</Label>
+              <Input
+                id="form-phone"
+                type="tel"
+                placeholder="+7 (999) 123-45-67"
+                value={formData.phone}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="form-email">Email</Label>
+              <Input
+                id="form-email"
+                type="email"
+                placeholder="example@mail.ru"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="form-project">Тип проекта</Label>
+              <Select value={formData.projectType} onValueChange={(value) => setFormData({ ...formData, projectType: value })}>
+                <SelectTrigger id="form-project">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="frame-house">Каркасный дом</SelectItem>
+                  <SelectItem value="bathhouse">Баня</SelectItem>
+                  <SelectItem value="gazebo">Беседка</SelectItem>
+                  <SelectItem value="terrace">Терраса</SelectItem>
+                  <SelectItem value="other">Другое</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="form-message">Сообщение</Label>
+              <Textarea
+                id="form-message"
+                placeholder="Расскажите о вашем проекте..."
+                value={formData.message}
+                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                rows={4}
+              />
+            </div>
+            <Button type="submit" className="w-full" size="lg">
+              <Icon name="Send" size={20} className="mr-2" />
+              Отправить заявку
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      <div className="fixed bottom-6 right-6 z-50">
+        <Button
+          size="lg"
+          className="rounded-full h-16 w-16 shadow-2xl hover:scale-110 transition-transform"
+          onClick={() => setFormOpen(true)}
+        >
+          <Icon name="MessageSquare" size={28} />
+        </Button>
+      </div>
     </div>
   );
 };
