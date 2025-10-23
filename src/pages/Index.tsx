@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -29,6 +29,26 @@ const Index = () => {
     projectType: 'frame-house',
     message: ''
   });
+
+  useEffect(() => {
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-in');
+        }
+      });
+    }, observerOptions);
+
+    const elements = document.querySelectorAll('.fade-in-section');
+    elements.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, []);
 
   const categories = [
     {
@@ -285,7 +305,7 @@ const Index = () => {
 
       <section id="catalog" className="py-16 md:py-24">
         <div className="container">
-          <div className="text-center mb-12 animate-fade-in">
+          <div className="text-center mb-12 fade-in-section">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Наш каталог</h2>
             <p className="text-muted-foreground text-lg">Выберите категорию строительства</p>
           </div>
@@ -293,8 +313,8 @@ const Index = () => {
             {categories.map((category, index) => (
               <Card
                 key={category.id}
-                className="overflow-hidden hover:shadow-lg transition-all duration-300 animate-scale-in cursor-pointer group"
-                style={{ animationDelay: `${index * 100}ms` }}
+                className="overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group fade-in-section"
+                style={{ transitionDelay: `${index * 100}ms` }}
               >
                 <div className="relative h-48 overflow-hidden">
                   <img
@@ -327,7 +347,7 @@ const Index = () => {
 
       <section id="projects" className="py-16 md:py-24 bg-muted/50">
         <div className="container">
-          <div className="text-center mb-12">
+          <div className="text-center mb-12 fade-in-section">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Популярные проекты</h2>
             <p className="text-muted-foreground text-lg">Готовые решения для вашего участка</p>
           </div>
@@ -412,7 +432,7 @@ const Index = () => {
       <section id="about" className="py-16 md:py-24">
         <div className="container">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
+            <div className="fade-in-section">
               <Badge className="mb-4">О компании</Badge>
               <h2 className="text-3xl md:text-4xl font-bold mb-6">
                 Строим с любовью к дереву и природе
@@ -445,7 +465,7 @@ const Index = () => {
                 </div>
               </div>
             </div>
-            <div className="relative">
+            <div className="relative fade-in-section">
               <img
                 src="https://cdn.poehali.dev/projects/1facf563-acf7-4911-a4fc-00f5625ed9db/files/1b45720f-c5e9-4631-a949-e4c4d798b972.jpg"
                 alt="О компании"
@@ -458,7 +478,7 @@ const Index = () => {
 
       <section id="services" className="py-16 md:py-24 bg-muted/50">
         <div className="container">
-          <div className="text-center mb-12">
+          <div className="text-center mb-12 fade-in-section">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Наши услуги</h2>
             <p className="text-muted-foreground text-lg">Полный цикл строительства</p>
           </div>
@@ -466,8 +486,8 @@ const Index = () => {
             {services.map((service, index) => (
               <Card
                 key={index}
-                className="text-center hover:shadow-lg transition-shadow animate-scale-in"
-                style={{ animationDelay: `${index * 100}ms` }}
+                className="text-center hover:shadow-lg transition-shadow fade-in-section"
+                style={{ transitionDelay: `${index * 100}ms` }}
               >
                 <CardHeader>
                   <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
@@ -484,13 +504,13 @@ const Index = () => {
 
       <section id="reviews" className="py-16 md:py-24">
         <div className="container">
-          <div className="text-center mb-12">
+          <div className="text-center mb-12 fade-in-section">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Отзывы клиентов</h2>
             <p className="text-muted-foreground text-lg">Что говорят о нас</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {reviews.map((review, index) => (
-              <Card key={index} className="animate-fade-in" style={{ animationDelay: `${index * 100}ms` }}>
+              <Card key={index} className="fade-in-section" style={{ transitionDelay: `${index * 100}ms` }}>
                 <CardHeader>
                   <div className="flex items-center gap-2 mb-2">
                     {[...Array(review.rating)].map((_, i) => (
@@ -511,12 +531,12 @@ const Index = () => {
       <section id="calculator" className="py-16 md:py-24 bg-gradient-to-br from-primary/5 to-accent/5">
         <div className="container">
           <div className="max-w-2xl mx-auto">
-            <div className="text-center mb-12">
+            <div className="text-center mb-12 fade-in-section">
               <Badge className="mb-4">Калькулятор</Badge>
               <h2 className="text-3xl md:text-4xl font-bold mb-4">Рассчитать стоимость</h2>
               <p className="text-muted-foreground text-lg">Примерная стоимость вашего проекта</p>
             </div>
-            <Card className="shadow-xl">
+            <Card className="shadow-xl fade-in-section">
               <CardHeader>
                 <CardTitle>Параметры объекта</CardTitle>
                 <CardDescription>Укажите данные для расчёта</CardDescription>
@@ -582,11 +602,11 @@ const Index = () => {
       <section id="faq" className="py-16 md:py-24 bg-muted/50">
         <div className="container">
           <div className="max-w-3xl mx-auto">
-            <div className="text-center mb-12">
+            <div className="text-center mb-12 fade-in-section">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">Часто задаваемые вопросы</h2>
               <p className="text-muted-foreground text-lg">Ответы на популярные вопросы</p>
             </div>
-            <Accordion type="single" collapsible className="w-full">
+            <Accordion type="single" collapsible className="w-full fade-in-section">
               <AccordionItem value="item-1">
                 <AccordionTrigger className="text-left">
                   Какие сроки строительства дома?
@@ -631,12 +651,12 @@ const Index = () => {
       <section id="contacts" className="py-16 md:py-24">
         <div className="container">
           <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
+            <div className="text-center mb-12 fade-in-section">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">Контакты</h2>
               <p className="text-muted-foreground text-lg">Свяжитесь с нами удобным способом</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card className="text-center">
+              <Card className="text-center fade-in-section">
                 <CardHeader>
                   <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
                     <Icon name="Phone" size={24} className="text-primary" />
@@ -648,7 +668,7 @@ const Index = () => {
                   <p className="text-sm text-muted-foreground mt-2">Пн-Вс: 9:00 - 20:00</p>
                 </CardContent>
               </Card>
-              <Card className="text-center">
+              <Card className="text-center fade-in-section" style={{ transitionDelay: '100ms' }}>
                 <CardHeader>
                   <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
                     <Icon name="Mail" size={24} className="text-primary" />
@@ -660,7 +680,7 @@ const Index = () => {
                   <p className="text-sm text-muted-foreground mt-2">Ответим в течение часа</p>
                 </CardContent>
               </Card>
-              <Card className="text-center">
+              <Card className="text-center fade-in-section" style={{ transitionDelay: '200ms' }}>
                 <CardHeader>
                   <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
                     <Icon name="MapPin" size={24} className="text-primary" />
